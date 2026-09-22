@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en" class="dark h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Website Cloner Template — Real-Time Agent Studio & Workbench</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            background: 'oklch(0.145 0 0)',
+            foreground: 'oklch(0.985 0 0)',
+            card: 'oklch(0.18 0 0)',
+            'card-foreground': 'oklch(0.985 0 0)',
+            primary: {
+              DEFAULT: '#3b82f6',
+              foreground: '#ffffff',
+              hover: '#2563eb'
+            },
+            secondary: {
+              DEFAULT: '#27272a',
+              foreground: '#fafafa'
+            },
+            muted: {
+              DEFAULT: '#27272a',
+              foreground: '#a1a1aa'
+            },
+            accent: {
+              DEFAULT: '#10b981',
+              foreground: '#ffffff'
+            },
+            border: '#27272a',
+            input: '#27272a'
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['Geist Mono', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c0d0e;
+      color: #f4f4f5;
+    }
+    .font-outfit { font-family: 'Outfit', sans-serif; }
+    .font-mono { font-family: 'Geist Mono', monospace; }
+    
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121316;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+
+    /* Terminal glow & animations */
+    .terminal-box {
+      box-shadow: 0 0 35px -5px rgba(59, 130, 246, 0.15);
+    }
+    .badge-glow {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- TOP PROMO & STATUS BAR -->
+  <div class="border-b border-zinc-800 bg-zinc-950/80 px-4 py-2 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-xs gap-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          v0.4.0 Live Engine Ready
+        </span>
+        <span class="text-zinc-400 hidden sm:inline">Next.js 16.3 · React 19 · Tailwind v4 · Claude Code Opus 5</span>
+      </div>
+      <div class="flex items-center gap-4 text-zinc-400">
+        <span class="flex items-center gap-1 text-zinc-300">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-400"></i> Strict Route Isolation Active
+        </span>
+        <a href="https://github.com/JCodesMore/ai-website-cloner-template" target="_blank" class="hover:text-white flex items-center gap-1 transition-colors">
+          <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-yellow-400"></i> Star on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER / NAVIGATION -->
+  <header class="border-b border-zinc-800/80 bg-zinc-900/50 backdrop-blur-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <i data-lucide="wand-2" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-outfit font-bold text-lg text-white tracking-tight">ai-website-clone-template</h1>
+            <span class="text-[10px] bg-zinc-800 text-zinc-300 border border-zinc-700 px-1.5 py-0.5 rounded font-mono">Next.js 16</span>
+          </div>
+          <p class="text-xs text-zinc-400 -mt-0.5">Autonomous Multi-Phase Website Reverse-Engineering Agent</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions Navigation Tabs -->
+      <nav class="hidden md:flex items-center space-x-1 bg-zinc-950/60 p-1 rounded-lg border border-zinc-800">
+        <button onclick="switchTab('studio')" id="tab-btn-studio" class="px-3 py-1.5 rounded-md text-xs font-medium text-white bg-blue-600 shadow-sm flex items-center gap-1.5 transition-all">
+          <i data-lucide="play-circle" class="w-3.5 h-3.5"></i> Clone Studio
+        </button>
+        <button onclick="switchTab('pipeline')" id="tab-btn-pipeline" class="px-3 py-1.5 rounded-md text-xs font-medium text-zinc-400 hover:text-white flex items-center gap-1.5 transition-all">
+          <i data-lucide="git-branch" class="w-3.5 h-3.5"></i> Pipeline Architecture
+        </button>
+        <button onclick="switchTab('inspection')" id="tab-btn-inspection" class="px-3 py-1.5 rounded-md text-xs font-medium text-zinc-400 hover:text-white flex items-center gap-1.5 transition-all">
+          <i data-lucide="microscope" class="w-3.5 h-3.5"></i> Inspection Guide
+        </button>
+        <button onclick="switchTab('platforms')" id="tab-btn-platforms" class="px-3 py-1.5 rounded-md text-xs font-medium text-zinc-400 hover:text-white flex items-center gap-1.5 transition-all">
+          <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Supported Agents (13)
+        </button>
+        <button onclick="switchTab('files')" id="tab-btn-files" class="px-3 py-1.5 rounded-md text-xs font-medium text-zinc-400 hover:text-white flex items-center gap-1.5 transition-all">
+          <i data-lucide="folder-code" class="w-3.5 h-3.5"></i> Codebase Explorer
+        </button>
+      </nav>
+
+      <div class="flex items-center gap-2.5">
+        <button onclick="toggleQuickDemo()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center gap-1.5 transition-all">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Load Demo Target
+        </button>
+        <a href="https://github.com/JCodesMore/ai-website-cloner-template/generate" target="_blank" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-sm shadow-emerald-600/30 transition-all">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i> Use Template
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+
+    <!-- TAB 1: CLONE STUDIO & WORKBENCH (DEFAULT VIEW) -->
+    <section id="tab-studio" class="tab-content flex flex-col gap-6">
+      
+      <!-- HERO COMMAND BAR -->
+      <div class="bg-gradient-to-b from-zinc-900 via-zinc-900/90 to-zinc-950 border border-zinc-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden terminal-box">
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 border border-blue-500/20 text-blue-400 mb-4">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i> One-Command Multi-Site Reverse Engineering
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight font-outfit">
+            Clone any website into a clean, modern <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400">Next.js 16 + Tailwind v4</span> codebase
+          </h2>
+          <p class="mt-2 text-sm sm:text-base text-zinc-400">
+            Dispatches automated reconnaissance, computed CSS extractions, asset scrapers, and parallel builder agents in isolated git worktrees.
+          </p>
+        </div>
+
+        <!-- Dynamic Live Interactive URL Formulation Bar -->
+        <form id="clone-form" onsubmit="handleStartClone(event)" class="mt-6 flex flex-col sm:flex-row gap-3">
+          <div class="flex-1 relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500 font-mono text-sm">
+              /clone-website
+            </div>
+            <input 
+              type="text" 
+              id="target-urls-input" 
+              placeholder="https://linear.app https://stripe.com/pricing"
+              value="https://linear.app"
+              class="w-full pl-36 pr-4 py-3 bg-zinc-950/90 border border-zinc-700 rounded-xl text-zinc-100 font-mono text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-inner"
+              required
+            />
+          </div>
+          <button 
+            type="submit" 
+            id="start-clone-btn"
+            class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all active:scale-95"
+          >
+            <i data-lucide="cpu" class="w-4 h-4"></i> Run AI Skill
+          </button>
+        </form>
+
+        <!-- Quick Target Presets -->
+        <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
+          <span class="text-zinc-500 font-mono">Sample targets:</span>
+          <button onclick="setPreset('https://linear.app')" class="px-2.5 py-1 rounded bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 font-mono transition-colors">linear.app</button>
+          <button onclick="setPreset('https://stripe.com/pricing')" class="px-2.5 py-1 rounded bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 font-mono transition-colors">stripe.com/pricing</button>
+          <button onclick="setPreset('https://vercel.com/templates https://supabase.com/pricing')" class="px-2.5 py-1 rounded bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 font-mono transition-colors">multi: vercel + supabase</button>
+          <button onclick="setPreset('https://raycast.com')" class="px-2.5 py-1 rounded bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 font-mono transition-colors">raycast.com</button>
+        </div>
+      </div>
+
+      <!-- WORKBENCH GRID: Real-Time Extraction Execution + Visual Code Workspace -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- LEFT: Real-Time Execution Console & Step-by-Step Telemetry (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden flex flex-col h-full">
+            <!-- Console Header -->
+            <div class="px-4 py-3 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex space-x-1.5">
+                  <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                  <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
+                </div>
+                <span class="text-xs font-mono text-zinc-400 font-medium ml-2">claude --chrome &bull; Agent Dispatcher</span>
+              </div>
+              <div id="pipeline-status-badge" class="px-2 py-0.5 text-[10px] font-mono rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                IDLE
+              </div>
+            </div>
+
+            <!-- Progress Meter -->
+            <div class="p-4 border-b border-zinc-800/60 bg-zinc-900/40">
+              <div class="flex justify-between text-xs mb-1.5 font-mono">
+                <span class="text-zinc-400">Pipeline Execution Progress</span>
+                <span id="progress-percent" class="text-blue-400 font-semibold">0%</span>
+              </div>
+              <div class="w-full bg-zinc-950 rounded-full h-2 overflow-hidden border border-zinc-800">
+                <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-2 rounded-full w-0 transition-all duration-300"></div>
+              </div>
+
+              <!-- Pipeline 5-Phase Indicator Cards -->
+              <div class="grid grid-cols-5 gap-1.5 mt-3 text-[10px] font-mono text-center">
+                <div id="phase-1-pill" class="p-1 rounded bg-zinc-950 border border-zinc-800 text-zinc-500">1. Recon</div>
+                <div id="phase-2-pill" class="p-1 rounded bg-zinc-950 border border-zinc-800 text-zinc-500">2. Foundation</div>
+                <div id="phase-3-pill" class="p-1 rounded bg-zinc-950 border border-zinc-800 text-zinc-500">3. Specs</div>
+                <div id="phase-4-pill" class="p-1 rounded bg-zinc-950 border border-zinc-800 text-zinc-500">4. Builders</div>
+                <div id="phase-5-pill" class="p-1 rounded bg-zinc-950 border border-zinc-800 text-zinc-500">5. QA Diff</div>
+              </div>
+            </div>
+
+            <!-- Streaming Terminal Output -->
+            <div id="terminal-logs" class="p-4 font-mono text-xs text-zinc-300 bg-zinc-950 h-96 overflow-y-auto space-y-1.5 selection:bg-zinc-800 leading-relaxed border-b border-zinc-800/80">
+              <div class="text-zinc-500">// Ready. Enter target URL(s) above and press "Run AI Skill".</div>
+              <div class="text-zinc-500">// Pre-flight: Next.js 16 App Router &amp; shadcn/ui base scaffold verified.</div>
+              <div class="text-zinc-500">// Awaiting orchestrator instructions...</div>
+            </div>
+
+            <!-- Subagent Worktree Tracker -->
+            <div class="p-4 bg-zinc-900/90 text-xs">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-medium text-zinc-300 flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-3.5 h-3.5 text-blue-400"></i> Parallel Git Worktree Workers
+                </span>
+                <span id="worker-count" class="text-[10px] font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">0 active</span>
+              </div>
+              <div id="subagents-list" class="space-y-1.5 max-h-32 overflow-y-auto">
+                <div class="text-zinc-500 text-[11px] italic">No active parallel builders. Launch pipeline to spawn agents.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Live Cloned Next.js App Preview & Extracted Artifacts Inspector (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden flex flex-col h-full">
+            
+            <!-- Preview Controls Toolbar -->
+            <div class="px-4 py-3 bg-zinc-950 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <button onclick="setWorkbenchView('rendered')" id="btn-view-rendered" class="px-3 py-1 rounded bg-blue-600 text-white text-xs font-medium flex items-center gap-1">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i> Live Generated Next.js UI
+                </button>
+                <button onclick="setWorkbenchView('tokens')" id="btn-view-tokens" class="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium flex items-center gap-1">
+                  <i data-lucide="palette" class="w-3.5 h-3.5"></i> Design Tokens
+                </button>
+                <button onclick="setWorkbenchView('specs')" id="btn-view-specs" class="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium flex items-center gap-1">
+                  <i data-lucide="file-code" class="w-3.5 h-3.5"></i> Component Specs
+                </button>
+                <button onclick="setWorkbenchView('tree')" id="btn-view-tree" class="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium flex items-center gap-1">
+                  <i data-lucide="folder-tree" class="w-3.5 h-3.5"></i> Generated Files
+                </button>
+              </div>
+
+              <!-- Viewport Resizer -->
+              <div class="flex items-center gap-1 text-zinc-400 bg-zinc-900 border border-zinc-800 p-1 rounded-md">
+                <button onclick="resizePreview('100%')" title="Desktop (100%)" class="p-1 hover:text-white rounded hover:bg-zinc-800"><i data-lucide="monitor" class="w-3.5 h-3.5"></i></button>
+                <button onclick="resizePreview('768px')" title="Tablet (768px)" class="p-1 hover:text-white rounded hover:bg-zinc-800"><i data-lucide="tablet" class="w-3.5 h-3.5"></i></button>
+                <button onclick="resizePreview('390px')" title="Mobile (390px)" class="p-1 hover:text-white rounded hover:bg-zinc-800"><i data-lucide="smartphone" class="w-3.5 h-3.5"></i></button>
+              </div>
+            </div>
+
+            <!-- VIEW CONTAINER -->
+            <div class="p-4 bg-zinc-950/70 flex-1 flex flex-col justify-center items-center overflow-auto min-h-[500px]">
+              
+              <!-- 1. LIVE RENDERED NEXT.JS COMPONENT VIEW -->
+              <div id="workbench-rendered" class="w-full flex flex-col items-center transition-all duration-300">
+                <div id="preview-viewport-wrapper" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl transition-all duration-300">
+                  
+                  <!-- Browser Mock Chrome -->
+                  <div class="px-3 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                      <div class="flex space-x-1">
+                        <span class="w-2 h-2 rounded-full bg-zinc-700"></span>
+                        <span class="w-2 h-2 rounded-full bg-zinc-700"></span>
+                        <span class="w-2 h-2 rounded-full bg-zinc-700"></span>
+                      </div>
+                      <span id="preview-url-badge" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 font-mono text-[11px] border border-zinc-800">
+                        http://localhost:3000/
+                      </span>
+                    </div>
+                    <span class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live Hot Reload
+                    </span>
+                  </div>
+
+                  <!-- Actual Generated React/Next.js Dynamic Cloned Output -->
+                  <div id="live-rendered-content" class="p-6 sm:p-8 space-y-8 bg-zinc-950 text-zinc-100 min-h-[420px]">
+                    <!-- Initial Scaffold Placeholder (from src/app/page.tsx) -->
+                    <div class="text-center py-16 flex flex-col items-center justify-center space-y-3">
+                      <div class="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500">
+                        <i data-lucide="package-search" class="w-6 h-6"></i>
+                      </div>
+                      <p class="text-zinc-400 text-sm">Clone target not yet built.</p>
+                      <p class="text-xs text-zinc-500">Run <code class="font-mono text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">/clone-website &lt;url&gt;</code> above to generate the live Next.js app.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. DESIGN TOKENS INSPECTOR VIEW -->
+              <div id="workbench-tokens" class="w-full hidden space-y-4">
+                <div class="border border-zinc-800 rounded-lg p-4 bg-zinc-900">
+                  <h4 class="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-3">Extracted Color Palette (oklch &amp; Hex)</h4>
+                  <div id="tokens-color-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="border border-zinc-800 rounded-lg p-4 bg-zinc-900">
+                    <h4 class="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-2">Typography &amp; Scale</h4>
+                    <div id="tokens-typography" class="space-y-2 text-xs font-mono text-zinc-300">
+                      <!-- Populated dynamically -->
+                    </div>
+                  </div>
+                  <div class="border border-zinc-800 rounded-lg p-4 bg-zinc-900">
+                    <h4 class="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-2">Spacing, Radius &amp; Elevation</h4>
+                    <div id="tokens-spacing" class="space-y-2 text-xs font-mono text-zinc-300">
+                      <!-- Populated dynamically -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. COMPONENT SPECS VIEW -->
+              <div id="workbench-specs" class="w-full hidden space-y-3">
+                <div class="flex items-center justify-between text-xs font-mono text-zinc-400 mb-1">
+                  <span>docs/research/components/hero-section.spec.md</span>
+                  <span class="text-emerald-400">getComputedStyle() Exact Values</span>
+                </div>
+                <pre id="specs-code-block" class="p-4 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-mono text-blue-300 overflow-x-auto leading-relaxed max-h-[460px]">
+// Component specifications will appear here during phase 3 extraction...
+                </pre>
+              </div>
+
+              <!-- 4. GENERATED FILES EXPLORER VIEW -->
+              <div id="workbench-tree" class="w-full hidden space-y-3">
+                <div class="border border-zinc-800 rounded-lg p-4 bg-zinc-900 text-xs font-mono space-y-2">
+                  <div class="text-zinc-400 uppercase tracking-wider mb-2">Generated Isolated App Router Workspace:</div>
+                  <div id="generated-tree-list" class="space-y-1 text-zinc-300 pl-2 border-l border-zinc-800">
+                    <div>📁 <span class="text-blue-400">src/app/</span> (App Router)</div>
+                    <div class="pl-4">📄 page.tsx <span class="text-zinc-500">// Root scaffold</span></div>
+                    <div class="pl-4">📄 layout.tsx <span class="text-zinc-500">// Geist Sans + Geist Mono</span></div>
+                    <div class="pl-4">📄 globals.css <span class="text-zinc-500">// Tailwind v4 oklch tokens</span></div>
+                    <div>📁 <span class="text-blue-400">src/components/</span></div>
+                    <div class="pl-4">📁 ui/ <span class="text-zinc-500">// shadcn base primitives</span></div>
+                    <div>📁 <span class="text-blue-400">docs/research/</span></div>
+                    <div class="pl-4">📄 DESIGN_TOKENS.md</div>
+                    <div class="pl-4">📄 COMPONENT_INVENTORY.md</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Cloned Target Summary Stats Footer -->
+            <div class="px-4 py-2.5 bg-zinc-950 border-t border-zinc-800 flex flex-wrap items-center justify-between text-xs font-mono text-zinc-400 gap-2">
+              <div class="flex items-center gap-3">
+                <span id="stat-elements"><i data-lucide="box" class="w-3.5 h-3.5 inline text-blue-400"></i> Elements: 0</span>
+                <span id="stat-assets"><i data-lucide="image" class="w-3.5 h-3.5 inline text-emerald-400"></i> Assets Scraped: 0</span>
+                <span id="stat-routes"><i data-lucide="network" class="w-3.5 h-3.5 inline text-purple-400"></i> Isolated Routes: 1</span>
+              </div>
+              <button onclick="exportClonedZip()" class="hover:text-white flex items-center gap-1 text-zinc-300 bg-zinc-800 px-2 py-1 rounded border border-zinc-700">
+                <i data-lucide="download" class="w-3 h-3"></i> Export Generated Code
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 2: PIPELINE ARCHITECTURE (HOW IT WORKS) -->
+    <section id="tab-pipeline" class="tab-content hidden flex-col gap-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 sm:p-8">
+        <div class="max-w-3xl mb-8">
+          <span class="text-xs font-mono text-blue-400 uppercase tracking-wider">Multi-Phase Orchestration Engine</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1 font-outfit">The /clone-website Autonomous Pipeline</h2>
+          <p class="text-zinc-400 text-sm mt-2">
+            Instead of loose approximations or guessing layouts, the agent operates like a site foreman inspecting every computed style, writing auditable specs, and delegating to specialist builder subagents in git worktrees.
+          </p>
+        </div>
+
+        <!-- 5 Phase Visual Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <!-- Phase 1 -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between hover:border-blue-500/50 transition-all">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center font-bold text-sm mb-3">1</div>
+              <h3 class="font-semibold text-white text-sm mb-1">Reconnaissance</h3>
+              <p class="text-xs text-zinc-400 leading-relaxed">
+                Captures full-page screenshots at desktop, tablet, and mobile. Sweeps hover, click, and responsive states via Chrome MCP.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-zinc-900 text-[11px] font-mono text-blue-400">
+              Output: docs/design-references/
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between hover:border-indigo-500/50 transition-all">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center font-bold text-sm mb-3">2</div>
+              <h3 class="font-semibold text-white text-sm mb-1">Foundation</h3>
+              <p class="text-xs text-zinc-400 leading-relaxed">
+                Extracts design tokens into Tailwind v4 oklch CSS variables. Downloads all images, SVGs, and fonts into isolated public assets.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-zinc-900 text-[11px] font-mono text-indigo-400">
+              Output: globals.css &amp; public/
+            </div>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between hover:border-purple-500/50 transition-all">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center font-bold text-sm mb-3">3</div>
+              <h3 class="font-semibold text-white text-sm mb-1">Component Specs</h3>
+              <p class="text-xs text-zinc-400 leading-relaxed">
+                Runs `getComputedStyle()` queries to capture exact pixel dimensions, paddings, shadows, and responsive shift breakpoints.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-zinc-900 text-[11px] font-mono text-purple-400">
+              Output: docs/research/components/
+            </div>
+          </div>
+
+          <!-- Phase 4 -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between hover:border-emerald-500/50 transition-all">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-bold text-sm mb-3">4</div>
+              <h3 class="font-semibold text-white text-sm mb-1">Parallel Build</h3>
+              <p class="text-xs text-zinc-400 leading-relaxed">
+                Dispatches isolated subagents in git worktrees, each dedicated to coding a single component using strict TypeScript and Radix.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-zinc-900 text-[11px] font-mono text-emerald-400">
+              Output: src/components/sites/
+            </div>
+          </div>
+
+          <!-- Phase 5 -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between hover:border-amber-500/50 transition-all">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-sm mb-3">5</div>
+              <h3 class="font-semibold text-white text-sm mb-1">Assembly &amp; QA</h3>
+              <p class="text-xs text-zinc-400 leading-relaxed">
+                Merges worktrees, hooks page router, validates TypeScript &amp; ESLint, and conducts pixel-by-pixel visual diffing.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-zinc-900 text-[11px] font-mono text-amber-400">
+              Output: Verified App Router Page
+            </div>
+          </div>
+        </div>
+
+        <!-- Guiding Rules Breakdown -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 pt-8 border-t border-zinc-800">
+          <div class="space-y-3">
+            <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> 1. Completeness Beats Speed
+            </h4>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Every builder agent receives full inline context: screenshots, exact computed CSS values, downloaded asset paths, real text copy, and component hierarchy. No agent ever guesses styling or placeholders.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> 2. Collision-Resistant Route Isolation
+            </h4>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Cloning multiple URLs assigns a unique `<site-key>` and `<page-key>` hash. Existing authored routes are never overwritten, enabling multi-site and multi-page preservation in one Next.js project.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: INSPECTION GUIDE (CHECKLIST & REVERSE-ENGINEERING SPECS) -->
+    <section id="tab-inspection" class="tab-content hidden flex-col gap-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <span class="text-xs font-mono text-emerald-400 uppercase tracking-wider">docs/research/INSPECTION_GUIDE.md</span>
+            <h2 class="text-2xl font-bold text-white mt-1 font-outfit">Interactive Reverse-Engineering Checklist</h2>
+            <p class="text-zinc-400 text-xs mt-1">Audit manual or automated extraction points across all 5 technical phases.</p>
+          </div>
+          <button onclick="resetInspectionChecklist()" class="text-xs text-zinc-400 hover:text-white px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 self-start sm:self-auto">
+            Reset Checklist
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- Audit Card 1: Visual Audit -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+            <h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <i data-lucide="camera" class="w-4 h-4 text-blue-400"></i> Phase 1: Visual Audit
+            </h3>
+            <div class="space-y-2 text-xs text-zinc-300" id="checklist-phase-1">
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-blue-600 focus:ring-0"> Distinct pages (Desktop, Tablet, Mobile)</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-blue-600 focus:ring-0"> Dark / Light mode variants</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-blue-600 focus:ring-0"> Key hover &amp; active interaction states</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-blue-600 focus:ring-0"> Loading / skeleton states</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="rounded bg-zinc-800 border-zinc-700 text-blue-600 focus:ring-0"> Empty states &amp; error dialogs</label>
+            </div>
+          </div>
+
+          <!-- Audit Card 2: Design Tokens -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+            <h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <i data-lucide="palette" class="w-4 h-4 text-indigo-400"></i> Phase 2: Design Tokens
+            </h3>
+            <div class="space-y-2 text-xs text-zinc-300" id="checklist-phase-2">
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-indigo-600 focus:ring-0"> Colors (Background, Foreground, Accent)</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-indigo-600 focus:ring-0"> Typography scale, font-weights, line-height</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-indigo-600 focus:ring-0"> Spacing scale (4px, 8px, 16px, 24px...)</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-indigo-600 focus:ring-0"> Border radius (buttons, cards, inputs)</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="rounded bg-zinc-800 border-zinc-700 text-indigo-600 focus:ring-0"> Shadows &amp; elevation layers</label>
+            </div>
+          </div>
+
+          <!-- Audit Card 3: Layout & Stack -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+            <h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <i data-lucide="layout-grid" class="w-4 h-4 text-purple-400"></i> Phase 3: Layout &amp; Architecture
+            </h3>
+            <div class="space-y-2 text-xs text-zinc-300" id="checklist-phase-3">
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-purple-600 focus:ring-0"> CSS Grid / Flexbox container layout</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-purple-600 focus:ring-0"> Sticky header &amp; floating action z-index</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-purple-600 focus:ring-0"> Framework detection (__NEXT_DATA__)</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="rounded bg-zinc-800 border-zinc-700 text-purple-600 focus:ring-0"> SVG Icon library extraction</label>
+              <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked class="rounded bg-zinc-800 border-zinc-700 text-purple-600 focus:ring-0"> Responsive shift breakpoints</label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SUPPORTED AGENTS (13 PLATFORMS & SYNC ENGINE) -->
+    <section id="tab-platforms" class="tab-content hidden flex-col gap-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 sm:p-8">
+        
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+          <div>
+            <span class="text-xs font-mono text-purple-400 uppercase tracking-wider">Multi-Agent Ecosystem</span>
+            <h2 class="text-2xl font-bold text-white mt-1 font-outfit">13 Supported AI Coding Platforms</h2>
+            <p class="text-zinc-400 text-xs mt-1">Sourced from AGENTS.md and SKILL.md via deterministic synchronization scripts.</p>
+          </div>
+          <button onclick="triggerSkillSyncSimulation()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-xs font-mono text-zinc-200 flex items-center gap-2">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-blue-400"></i> Run sync-skills.mjs
+          </button>
+        </div>
+
+        <!-- Platforms Matrix Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="platforms-grid">
+          <!-- Platform Cards -->
+          <div class="bg-zinc-950 border border-blue-500/30 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs">CC</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Claude Code</div>
+                <div class="text-[11px] text-zinc-400">.claude/skills/clone-website/</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">Recommended (Opus 5)</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">CX</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Codex CLI</div>
+                <div class="text-[11px] text-zinc-400">.codex/skills/clone-website/</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">CU</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Cursor</div>
+                <div class="text-[11px] text-zinc-400">.cursor/commands/clone-website.md</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">WS</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Windsurf</div>
+                <div class="text-[11px] text-zinc-400">.windsurf/workflows/clone-website.md</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">GM</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Gemini CLI</div>
+                <div class="text-[11px] text-zinc-400">.gemini/commands/clone-website.toml</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">CL</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Cline &amp; Roo Code</div>
+                <div class="text-[11px] text-zinc-400">.clinerules · .roo/skills/</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">GH</div>
+              <div>
+                <div class="text-sm font-semibold text-white">GitHub Copilot</div>
+                <div class="text-[11px] text-zinc-400">.github/copilot-instructions.md</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">KR</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Kiro</div>
+                <div class="text-[11px] text-zinc-400">.kiro/skills/clone-website/</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs">AQ</div>
+              <div>
+                <div class="text-sm font-semibold text-white">Amazon Q &amp; Augment</div>
+                <div class="text-[11px] text-zinc-400">.amazonq/ · .augment/</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Supported</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 5: CODEBASE EXPLORER (SOURCE REPOSITORY FILE VIEWER) -->
+    <section id="tab-files" class="tab-content hidden flex-col gap-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+        
+        <!-- Files Sidebar -->
+        <div class="w-full md:w-72 bg-zinc-950 border-r border-zinc-800 p-4 flex flex-col">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono text-zinc-400 uppercase tracking-wider font-semibold">Repository Tree</span>
+            <span class="text-[10px] text-zinc-500 font-mono">67 files</span>
+          </div>
+          <div class="space-y-1 text-xs font-mono overflow-y-auto flex-1 max-h-[520px]" id="repo-file-tree">
+            <!-- Populated via JS with file selection listener -->
+          </div>
+        </div>
+
+        <!-- Code Viewer Pane -->
+        <div class="flex-1 bg-zinc-900 flex flex-col overflow-hidden">
+          <div class="px-4 py-3 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-blue-400"></i>
+              <span id="active-file-title" class="text-xs font-mono text-zinc-200">AGENTS.md</span>
+            </div>
+            <button onclick="copyActiveCode()" class="text-xs text-zinc-400 hover:text-white flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded">
+              <i data-lucide="copy" class="w-3 h-3"></i> Copy File
+            </button>
+          </div>
+          <pre id="active-file-content" class="p-4 text-xs font-mono text-zinc-300 overflow-auto flex-1 max-h-[540px] leading-relaxed bg-zinc-950">
+          </pre>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SPONSORS & FOOTER -->
+  <footer class="border-t border-zinc-800/80 bg-zinc-950/60 mt-auto py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-zinc-500">
+      <div class="flex flex-col sm:flex-row items-center gap-4">
+        <span>© 2025-2026 JCodesMore &bull; MIT License</span>
+        <span class="hidden sm:inline">&bull;</span>
+        <span>Sponsored by RapidProxy &amp; Atlas Cloud</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://discord.gg/hrTSX5yTpB" target="_blank" class="hover:text-zinc-300 flex items-center gap-1"><i data-lucide="message-square" class="w-3.5 h-3.5"></i> Discord Community</a>
+        <a href="https://github.com/JCodesMore/ai-website-cloner-template" target="_blank" class="hover:text-zinc-300 flex items-center gap-1"><i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub Repo</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIC: Full 100% Client-Side Engine, Simulators, State & Database -->
+  <script>
+    // INITIALIZE LUCIDE ICONS
+    lucide.createIcons();
+
+    // REPOSITORY SCHEMAS & SOURCE CODES CACHE
+    const REPO_FILES = {
+      "AGENTS.md": `# Website Reverse-Engineer Template\n\n## What This Is\nA reusable template for reverse-engineering any website into a clean, modern Next.js codebase using AI coding agents. The Next.js + shadcn/ui + Tailwind v4 base is pre-scaffolded — just run \`/clone-website <url1> [<url2> ...]\`.\n\n## Tech Stack\n- Framework: Next.js 16 (App Router, React 19, TypeScript strict)\n- UI: shadcn/ui (Radix primitives, Tailwind CSS v4, cn() utility)\n- Icons: Lucide React (default — will be replaced/supplemented by extracted SVGs)\n- Styling: Tailwind CSS v4 with oklch design tokens\n- Deployment: Vercel`,
+      "src/app/page.tsx": `export default function Home() {\n  return (\n    <main className="flex min-h-screen items-center justify-center">\n      <p className="text-muted-foreground">\n        Clone target not yet built. Run <code className="font-mono text-foreground">/clone-website</code> to start.\n      </p>\n    </main>\n  );\n}`,
+      "src/app/globals.css": `@import "tailwindcss";\n@import "tw-animate-css";\n@import "shadcn/tailwind.css";\n\n@custom-variant dark (&:is(.dark *));\n\n@theme inline {\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;\n  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;\n}\n\n:root {\n  --background: oklch(1 0 0);\n  --foreground: oklch(0.145 0 0);\n  --primary: oklch(0.205 0 0);\n  --radius: 0.625rem;\n}\n\n.dark {\n  --background: oklch(0.145 0 0);\n  --foreground: oklch(0.985 0 0);\n  --primary: oklch(0.922 0 0);\n}`,
+      "src/components/ui/button.tsx": `"use client"\n\nimport { Button as ButtonPrimitive } from "@base-ui/react/button"\nimport { cva, type VariantProps } from "class-variance-authority"\nimport { cn } from "@/lib/utils"\n\nconst buttonVariants = cva(\n  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent text-sm font-medium transition-all focus-visible:ring-2 disabled:opacity-50",\n  {\n    variants: {\n      variant: {\n        default: "bg-primary text-primary-foreground hover:bg-primary/80",\n        outline: "border-border bg-background hover:bg-muted",\n        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",\n      },\n      size: {\n        default: "h-8 px-3 text-sm",\n        sm: "h-7 px-2 text-xs",\n        lg: "h-10 px-4 text-base",\n      }\n    },\n    defaultVariants: { variant: "default", size: "default" }\n  }\n)`,
+      ".claude/skills/clone-website/SKILL.md": `---
+name: clone-website
+description: Reverse-engineer and clone one or more websites in one shot
+argument-hint: "<url1> [<url2> ...]"
+user-invocable: true
+---
+# Clone Website Multi-Phase Skill Pipeline:
+1. Reconnaissance (Full-scale screenshots & DOM sweep)
+2. Foundation (CSS variables & token injection)
+3. Component Specs (getComputedStyle extraction)
+4. Parallel Build (Git worktrees with isolated subagents)
+5. Assembly & QA Diffing`,
+      "scripts/sync-skills.mjs": `import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';\n// Generates /clone-website command/skill for 13 platforms\nconsole.log("Syncing clone-website skill across all platforms...");`
+    };
+
+    // CURRENT APP STATE
+    let isPipelineRunning = false;
+    let selectedFileKey = "AGENTS.md";
+
+    // TAB SWITCHING
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('text-zinc-400');
+      });
+
+      const target = document.getElementById('tab-' + tabId);
+      const btn = document.getElementById('tab-btn-' + tabId);
+      if (target) target.classList.remove('hidden');
+      if (btn) {
+        btn.classList.add('bg-blue-600', 'text-white');
+        btn.classList.remove('text-zinc-400');
+      }
+      lucide.createIcons();
+    }
+
+    // WORKBENCH PREVIEW SWITCHER
+    function setWorkbenchView(view) {
+      const views = ['rendered', 'tokens', 'specs', 'tree'];
+      views.forEach(v => {
+        const el = document.getElementById('workbench-' + v);
+        const btn = document.getElementById('btn-view-' + v);
+        if (el) el.classList.add('hidden');
+        if (btn) {
+          btn.classList.remove('bg-blue-600', 'text-white');
+          btn.classList.add('bg-zinc-800', 'text-zinc-300');
+        }
+      });
+
+      const activeEl = document.getElementById('workbench-' + view);
+      const activeBtn = document.getElementById('btn-view-' + view);
+      if (activeEl) activeEl.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('bg-blue-600', 'text-white');
+        activeBtn.classList.remove('bg-zinc-800', 'text-zinc-300');
+      }
+    }
+
+    // PREVIEW RESIZER
+    function resizePreview(width) {
+      const wrapper = document.getElementById('preview-viewport-wrapper');
+      if (wrapper) {
+        wrapper.style.maxWidth = width;
+      }
+    }
+
+    // PRESET URL SETTER
+    function setPreset(url) {
+      document.getElementById('target-urls-input').value = url;
+    }
+
+    function toggleQuickDemo() {
+      setPreset('https://linear.app');
+      handleStartClone(new Event('submit'));
+    }
+
+    // PIPELINE EXECUTION SIMULATOR & SYNTHESIZER
+    async function handleStartClone(e) {
+      if (e) e.preventDefault();
+      if (isPipelineRunning) return;
+
+      const input = document.getElementById('target-urls-input').value.trim();
+      if (!input) return;
+
+      isPipelineRunning = true;
+      const statusBadge = document.getElementById('pipeline-status-badge');
+      const startBtn = document.getElementById('start-clone-btn');
+      const logs = document.getElementById('terminal-logs');
+      const progressBar = document.getElementById('progress-bar');
+      const progressPercent = document.getElementById('progress-percent');
+      const liveRender = document.getElementById('live-rendered-content');
+      const previewUrlBadge = document.getElementById('preview-url-badge');
+      const subagentsList = document.getElementById('subagents-list');
+      const workerCount = document.getElementById('worker-count');
+
+      // Update UI to running state
+      statusBadge.textContent = 'RUNNING PIPELINE';
+      statusBadge.className = 'px-2 py-0.5 text-[10px] font-mono rounded bg-blue-500/20 text-blue-400 border border-blue-500/40 animate-pulse';
+      startBtn.disabled = true;
+      startBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Synthesizing...`;
+      lucide.createIcons();
+
+      const targetUrl = input.split(' ')[0];
+      previewUrlBadge.textContent = `http://localhost:3000/ (Cloning: ${targetUrl})`;
+
+      logs.innerHTML = '';
+      function addLog(msg, color = 'text-zinc-300') {
+        const div = document.createElement('div');
+        div.className = `${color} font-mono text-[11px] leading-relaxed`;
+        div.innerHTML = `<span class="text-zinc-600">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+        logs.appendChild(div);
+        logs.scrollTop = logs.scrollHeight;
+      }
+
+      function updatePhasePill(phaseNum, active) {
+        for (let i = 1; i <= 5; i++) {
+          const pill = document.getElementById(`phase-${i}-pill`);
+          if (i < phaseNum) {
+            pill.className = 'p-1 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 font-semibold';
+          } else if (i === phaseNum && active) {
+            pill.className = 'p-1 rounded bg-blue-600 text-white font-bold animate-pulse';
+          } else {
+            pill.className = 'p-1 rounded bg-zinc-950 border border-zinc-800 text-zinc-500';
+          }
+        }
+      }
+
+      function setProgress(pct) {
+        progressBar.style.width = pct + '%';
+        progressPercent.textContent = pct + '%';
+      }
+
+      // 1. RECONNAISSANCE
+      updatePhasePill(1, true);
+      setProgress(15);
+      addLog(`🚀 Initializing Chrome MCP automation session for: ${targetUrl}`, 'text-blue-400');
+      addLog(`🔍 Parsing layout geometry, viewport breakpoints (1440px, 768px, 390px)...`);
+      await new Promise(r => setTimeout(r, 600));
+
+      addLog(`📸 Captured 3 high-res responsive snapshots in docs/design-references/`, 'text-emerald-400');
+      addLog(`🎯 Interaction sweep: 14 hover states, 4 navigation modals, sticky header detected.`);
+      setProgress(30);
+      await new Promise(r => setTimeout(r, 600));
+
+      // 2. FOUNDATION & TOKEN SCRAPING
+      updatePhasePill(2, true);
+      addLog(`🎨 Extracting design tokens: oklch color matrix, Geist Sans font typography, radius tokens...`);
+      populateExtractedTokens(targetUrl);
+      setProgress(45);
+      await new Promise(r => setTimeout(r, 600));
+
+      // 3. COMPONENT SPECS EXTRACTION
+      updatePhasePill(3, true);
+      addLog(`📐 Running getComputedStyle() across DOM hierarchy for Hero, Features, Pricing & Footer...`);
+      populateComponentSpecs(targetUrl);
+      setProgress(60);
+      await new Promise(r => setTimeout(r, 600));
+
+      // 4. PARALLEL BUILDERS DISPATCH (Git Worktrees)
+      updatePhasePill(4, true);
+      workerCount.textContent = '4 workers active';
+      subagentsList.innerHTML = `
+        <div class="p-1.5 rounded bg-zinc-950 border border-zinc-800 flex items-center justify-between text-[11px] font-mono">
+          <span class="text-blue-400">worker-hero (worktree/hero-sec)</span>
+          <span class="text-emerald-400 animate-pulse">Building React 19 component</span>
+        </div>
+        <div class="p-1.5 rounded bg-zinc-950 border border-zinc-800 flex items-center justify-between text-[11px] font-mono">
+          <span class="text-indigo-400">worker-features (worktree/features-sec)</span>
+          <span class="text-emerald-400 animate-pulse">Wiring Radix cards</span>
+        </div>
+        <div class="p-1.5 rounded bg-zinc-950 border border-zinc-800 flex items-center justify-between text-[11px] font-mono">
+          <span class="text-purple-400">worker-navbar (worktree/navbar-comp)</span>
+          <span class="text-emerald-400 animate-pulse">Extracting SVG icons</span>
+        </div>
+      `;
+      addLog(`⚡ Dispatched 4 parallel Claude Code Opus 5 builder subagents in isolated git worktrees.`, 'text-amber-400');
+      setProgress(80);
+      await new Promise(r => setTimeout(r, 800));
+
+      // 5. ASSEMBLY, ROUTING & QA
+      updatePhasePill(5, true);
+      addLog(`🔗 Merging worktrees into src/app/page.tsx with zero merge conflicts.`);
+      addLog(`🧪 Running 'npm run check': TypeScript strict pass, ESLint 0 warnings, standalone build OK!`, 'text-emerald-400');
+      setProgress(100);
+
+      // Render actual replica clone in live view
+      renderDynamicClonedWebsite(targetUrl, liveRender);
+      document.getElementById('stat-elements').innerHTML = `<i data-lucide="box" class="w-3.5 h-3.5 inline text-blue-400"></i> Elements: 142`;
+      document.getElementById('stat-assets').innerHTML = `<i data-lucide="image" class="w-3.5 h-3.5 inline text-emerald-400"></i> Assets Scraped: 18 SVGs`;
+      document.getElementById('stat-routes').innerHTML = `<i data-lucide="network" class="w-3.5 h-3.5 inline text-purple-400"></i> Isolated Routes: 2`;
+
+      statusBadge.textContent = 'SYNTHESIS COMPLETE';
+      statusBadge.className = 'px-2 py-0.5 text-[10px] font-mono rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+      startBtn.disabled = false;
+      startBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Cloned Successfully`;
+      isPipelineRunning = false;
+      lucide.createIcons();
+    }
+
+    // POPULATE TOKENS DATA
+    function populateExtractedTokens(url) {
+      const grid = document.getElementById('tokens-color-grid');
+      const typography = document.getElementById('tokens-typography');
+      const spacing = document.getElementById('tokens-spacing');
+
+      grid.innerHTML = `
+        <div class="p-2.5 rounded bg-zinc-950 border border-zinc-800">
+          <div class="w-full h-8 rounded bg-zinc-950 border border-zinc-700 mb-1.5"></div>
+          <div class="text-[11px] font-mono font-bold text-white">--background</div>
+          <div class="text-[10px] font-mono text-zinc-500">oklch(0.145 0 0)</div>
+        </div>
+        <div class="p-2.5 rounded bg-zinc-950 border border-zinc-800">
+          <div class="w-full h-8 rounded bg-blue-600 mb-1.5"></div>
+          <div class="text-[11px] font-mono font-bold text-white">--primary</div>
+          <div class="text-[10px] font-mono text-zinc-500">oklch(0.55 0.22 260)</div>
+        </div>
+        <div class="p-2.5 rounded bg-zinc-950 border border-zinc-800">
+          <div class="w-full h-8 rounded bg-emerald-500 mb-1.5"></div>
+          <div class="text-[11px] font-mono font-bold text-white">--accent</div>
+          <div class="text-[10px] font-mono text-zinc-500">oklch(0.75 0.18 150)</div>
+        </div>
+        <div class="p-2.5 rounded bg-zinc-950 border border-zinc-800">
+          <div class="w-full h-8 rounded bg-zinc-800 mb-1.5"></div>
+          <div class="text-[11px] font-mono font-bold text-white">--muted</div>
+          <div class="text-[10px] font-mono text-zinc-500">oklch(0.269 0 0)</div>
+        </div>
+      `;
+
+      typography.innerHTML = `
+        <div><span class="text-zinc-500">font-family:</span> "Geist", Inter, sans-serif</div>
+        <div><span class="text-zinc-500">h1 (Hero Display):</span> 3.75rem (60px) / 1.1 / -0.02em</div>
+        <div><span class="text-zinc-500">h2 (Section Head):</span> 2.25rem (36px) / 1.25 / -0.01em</div>
+        <div><span class="text-zinc-500">body-text:</span> 0.9375rem (15px) / 1.6 / 0</div>
+      `;
+
+      spacing.innerHTML = `
+        <div><span class="text-zinc-500">container-max-w:</span> 1280px (Tailwind max-w-7xl)</div>
+        <div><span class="text-zinc-500">border-radius:</span> --radius: 0.625rem (10px)</div>
+        <div><span class="text-zinc-500">grid-gap-scale:</span> 1rem (16px) &bull; 2rem (32px)</div>
+        <div><span class="text-zinc-500">backdrop-blur:</span> blur(16px) + 80% opacity</div>
+      `;
+    }
+
+    // POPULATE SPECS
+    function populateComponentSpecs(url) {
+      const code = document.getElementById('specs-code-block');
+      code.textContent = `# Component Spec: HeroSection (Extracted from ${url})
+computed_styles:
+  container:
+    display: flex
+    flex-direction: column
+    align-items: center
+    padding: 96px 24px 64px 24px
+    background: radial-gradient(circle at 50% 0%, rgba(59,130,246,0.15), transparent 70%)
+  headline:
+    font-size: 56px
+    line-height: 1.08
+    letter-spacing: -0.03em
+    font-weight: 700
+    color: oklch(0.985 0 0)
+  cta_button:
+    height: 44px
+    border-radius: 10px
+    background: #3b82f6
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4)
+    font-weight: 600
+interactions:
+  - hover: scale(1.02) + glow transition
+  - click: instantaneous page route switch
+responsive_shifts:
+  - sm (640px): single-column flex
+  - lg (1024px): 2-column split with live demo canvas`;
+    }
+
+    // RENDER FULL PIXEL-PERFECT NEXT.JS CLONED REPLICA
+    function renderDynamicClonedWebsite(url, container) {
+      container.innerHTML = `
+        <!-- Cloned Site Live Header -->
+        <header class="flex items-center justify-between border-b border-zinc-800/80 pb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center font-bold text-white text-xs shadow-md shadow-blue-500/30">
+              ▲
+            </div>
+            <span class="font-outfit font-bold text-base text-white tracking-tight">Acme Linear Cloud</span>
+          </div>
+          <nav class="hidden md:flex items-center space-x-6 text-xs text-zinc-400 font-medium">
+            <a href="#features" class="hover:text-white transition-colors">Features</a>
+            <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
+            <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+            <a href="#changelog" class="hover:text-white transition-colors">Changelog</a>
+          </nav>
+          <div class="flex items-center gap-2">
+            <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200">Log In</button>
+            <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-sm">Get Started →</button>
+          </div>
+        </header>
+
+        <!-- Cloned Hero Section -->
+        <section class="py-12 flex flex-col items-center text-center space-y-5">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 border border-blue-500/20 text-blue-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Linear 2026 Engine Released
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-outfit max-w-2xl leading-tight">
+            The issue tracker you will actually <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">enjoy using</span>
+          </h1>
+          <p class="text-zinc-400 text-sm max-w-xl">
+            Streamline software projects, sprints, tasks, and bug tracking with instantaneous keyboard-first speed and real-time syncing.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs shadow-lg shadow-blue-500/25 transition-all">
+              Start Free Trial
+            </button>
+            <button class="px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-medium text-xs transition-all">
+              Watch 2-min Walkthrough
+            </button>
+          </div>
+        </section>
+
+        <!-- Cloned Features Grid (Radix Card Primitives + Tailwind) -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+          <div class="p-5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+            <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center mb-3">
+              <i data-lucide="zap" class="w-4 h-4"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-white mb-1">Sub-50ms Latency</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">Local-first IndexedDB architecture syncs in background with zero waiting.</p>
+          </div>
+          <div class="p-5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3">
+              <i data-lucide="git-merge" class="w-4 h-4"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-white mb-1">Git Worktree Sync</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">Direct branch isolation and automatic PR generation per sprint issue.</p>
+          </div>
+          <div class="p-5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center mb-3">
+              <i data-lucide="command" class="w-4 h-4"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-white mb-1">Command Menu</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">Keyboard navigation with ⌘K shortcut palette across all tasks.</p>
+          </div>
+        </section>
+      `;
+      lucide.createIcons();
+    }
+
+    // EXPORT REPOSITORY CODE (SIMULATOR)
+    function exportClonedZip() {
+      alert("📦 Codebase Bundler: Exporting complete standalone Next.js 16 project package with App Router, Radix UI components, and extracted tokens.");
+    }
+
+    // SYNC SIMULATOR
+    function triggerSkillSyncSimulation() {
+      alert("✅ sync-skills.mjs executed successfully:\n• 13 platform files refreshed from .claude/skills/clone-website/SKILL.md\n• All frontmatters and argument parameters verified.");
+    }
+
+    // REPO FILE EXPLORER
+    function initFileExplorer() {
+      const tree = document.getElementById('repo-file-tree');
+      tree.innerHTML = '';
+      Object.keys(REPO_FILES).forEach(filename => {
+        const div = document.createElement('div');
+        div.className = `p-1.5 rounded cursor-pointer transition-colors flex items-center gap-1.5 ${filename === selectedFileKey ? 'bg-blue-600/20 text-blue-400 font-semibold' : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'}`;
+        div.innerHTML = `<i data-lucide="${filename.endsWith('.md') ? 'file-text' : filename.endsWith('.css') ? 'palette' : 'code'}" class="w-3.5 h-3.5"></i> ${filename}`;
+        div.onclick = () => selectFile(filename);
+        tree.appendChild(div);
+      });
+      selectFile(selectedFileKey);
+    }
+
+    function selectFile(filename) {
+      selectedFileKey = filename;
+      document.getElementById('active-file-title').textContent = filename;
+      document.getElementById('active-file-content').textContent = REPO_FILES[filename] || '// Empty file';
+      initFileExplorer();
+    }
+
+    function copyActiveCode() {
+      const code = REPO_FILES[selectedFileKey] || '';
+      navigator.clipboard.writeText(code);
+      alert(`Copied ${selectedFileKey} to clipboard!`);
+    }
+
+    function resetInspectionChecklist() {
+      document.querySelectorAll('#tab-inspection input[type="checkbox"]').forEach(box => box.checked = true);
+    }
+
+    // INITIAL LOAD
+    window.addEventListener('DOMContentLoaded', () => {
+      initFileExplorer();
+      populateExtractedTokens('https://linear.app');
+      populateComponentSpecs('https://linear.app');
+    });
+  </script>
+</body>
+</html>
